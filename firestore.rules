@@ -1,0 +1,139 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ---------------------------------------------------------
+    // GLOBAL HELPERS
+    // ---------------------------------------------------------
+    function isSignedIn() { return request.auth != null; }
+    
+    function isAdmin() { 
+      return isSignedIn() && (
+        request.auth.token.email == 'cado7m@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      ); 
+    }
+    
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // ---------------------------------------------------------
+    // VALIDATION HELPERS
+    // ---------------------------------------------------------
+    
+    function isValidOpportunity(data) {
+      return data.keys().hasAll(['title', 'category', 'organization', 'description', 'status', 'createdAt', 'authorId']) &&
+             data.keys().size() <= 20 && 
+             data.title is string && data.title.size() <= 200 &&
+             data.category is string && data.category.size() <= 50 &&
+             data.organization is string && data.organization.size() <= 100 &&
+             data.description is string && data.description.size() <= 10000 &&
+             data.status in ['draft', 'published'] &&
+             data.authorId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    function isValidSubscription(data) {
+      return data.keys().hasAll(['email', 'createdAt', 'status']) &&
+             data.keys().size() == 3 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+             data.createdAt == request.time &&
+             data.status == 'active';
+    }
+
+    function isValidNews(data) {
+      return data.keys().hasAll(['title', 'content', 'status', 'createdAt']) &&
+             data.title is string && data.title.size() <= 300 &&
+             data.content is string && data.content.size() <= 20000 &&
+             data.status in ['draft', 'published'] &&
+             data.createdAt == request.time;
+    }
+
+    function isValidAnalyticsEvent(data) {
+      return data.keys().hasAll(['type', 'path', 'createdAt']) &&
+             data.keys().size() <= 6 &&
+             data.type is string && data.type.size() <= 60 &&
+             data.path is string && data.path.size() <= 300 &&
+             data.createdAt == request.time &&
+             (!('category' in data) || (data.category is string && data.category.size() <= 100)) &&
+             (!('opportunityId' in data) || (data.opportunityId is string && data.opportunityId.size() <= 128)) &&
+             (!('newsId' in data) || (data.newsId is string && data.newsId.size() <= 128));
+    }
+
+    function isValidMetadata(data) {
+      return data.keys().hasAll(['totalVisitorsBase', 'uniqueClicksBase', 'avgSessionSeconds', 'totalSubscribersBase', 'updatedAt']) &&
+             data.totalVisitorsBase is int &&
+             data.uniqueClicksBase is int &&
+             data.avgSessionSeconds is int &&
+             data.totalSubscribersBase is int;
+    }
+
+    // ---------------------------------------------------------
+    // OPPORTUNITIES
+    // ---------------------------------------------------------
+    match /opportunities/{opportunityId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidOpportunity(incoming()) && isValidId(opportunityId);
+      allow update: if isSignedIn() && isValidOpportunity(incoming()) && (
+        isAdmin() || 
+        existing().authorId == request.auth.uid
+      ) && incoming().createdAt == existing().createdAt;
+      allow delete: if isSignedIn() && (isAdmin() || existing().authorId == request.auth.uid);
+    }
+
+    // ---------------------------------------------------------
+    // NEWS
+    // ---------------------------------------------------------
+    match /news/{newsId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidNews(incoming()) && isValidId(newsId);
+      allow update: if isAdmin() && isValidNews(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // SUBSCRIPTIONS
+    // ---------------------------------------------------------
+    match /subscriptions/{subId} {
+      allow read: if isAdmin();
+      allow create: if isValidSubscription(incoming()) && isValidId(subId);
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // ADMINS
+    // ---------------------------------------------------------
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // ---------------------------------------------------------
+    // ANALYTICS EVENTS
+    // ---------------------------------------------------------
+    match /analytics_events/{eventId} {
+      allow read, list: if isAdmin();
+      allow create: if isValidAnalyticsEvent(incoming()) && isValidId(eventId);
+      allow update, delete: if false;
+    }
+
+    // ---------------------------------------------------------
+    // ANALYTICS METADATA
+    // ---------------------------------------------------------
+    match /analytics_metadata/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() && isValidMetadata(incoming()) && isValidId(docId);
+    }
+
+    // ---------------------------------------------------------
+    // DEFAULT DENY
+    // ---------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ---------------------------------------------------------
+    // GLOBAL HELPERS
+    // ---------------------------------------------------------
+    function isSignedIn() { return request.auth != null; }
+    
+    function isAdmin() { 
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'cado7m@gmail.com'
+      ); 
+    }
+    
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // ---------------------------------------------------------
+    // VALIDATION HELPERS
+    // ---------------------------------------------------------
+    
+    function isValidOpportunity(data) {
+      return data.keys().hasAll(['title', 'category', 'organization', 'description', 'status', 'createdAt', 'authorId']) &&
+             data.keys().size() <= 20 && // Allow for optional fields like city, region, etc.
+             data.title is string && data.title.size() <= 200 &&
+             data.category is string && data.category.size() <= 50 &&
+             data.organization is string && data.organization.size() <= 100 &&
+             data.description is string && data.description.size() <= 10000 &&
+             data.status in ['draft', 'published'] &&
+             data.authorId == request.auth.uid &&
+             data.createdAt == request.time;
+    }
+
+    function isValidSubscription(data) {
+      return data.keys().hasAll(['email', 'createdAt', 'status']) &&
+             data.keys().size() == 3 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+             data.createdAt == request.time &&
+             data.status == 'active';
+    }
+
+    function isValidNews(data) {
+      return data.keys().hasAll(['title', 'content', 'status', 'createdAt']) &&
+             data.title is string && data.title.size() <= 300 &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.status in ['draft', 'published'] &&
+             data.createdAt == request.time;
+    }
+
+    // ---------------------------------------------------------
+    // OPPORTUNITIES
+    // ---------------------------------------------------------
+    match /opportunities/{opportunityId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidOpportunity(incoming()) && isValidId(opportunityId);
+      allow update: if isSignedIn() && isValidOpportunity(incoming()) && (
+        isAdmin() || 
+        existing().authorId == request.auth.uid
+      ) && incoming().createdAt == existing().createdAt;
+      allow delete: if isSignedIn() && (isAdmin() || existing().authorId == request.auth.uid);
+    }
+
+    // ---------------------------------------------------------
+    // NEWS
+    // ---------------------------------------------------------
+    match /news/{newsId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidNews(incoming()) && isValidId(newsId);
+      allow update: if isAdmin() && isValidNews(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // SUBSCRIPTIONS
+    // ---------------------------------------------------------
+    match /subscriptions/{subId} {
+      allow read: if isAdmin();
+      allow create: if isValidSubscription(incoming()) && isValidId(subId);
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // ADMINS
+    // ---------------------------------------------------------
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // ---------------------------------------------------------
+    // DEFAULT DENY
+    // ---------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

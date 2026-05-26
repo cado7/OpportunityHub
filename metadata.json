@@ -1,0 +1,6 @@
+{
+  "name": "OpportunityHub SA",
+  "description": "A centralized platform for South African youth to discover bursaries, internships, jobs, and educational opportunities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

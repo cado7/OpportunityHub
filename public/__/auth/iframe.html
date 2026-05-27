@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Auth iframe</title>
+  <script type="module">
+    // This script is crucial for Firebase Auth to communicate with the parent window.
+    // It should initialize Firebase with the same config as your main app.
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+
+    // IMPORTANT: Ensure this matches your main app's firebaseConfig (from firebase-applet-config.json)
+    const firebaseConfig = {
+      apiKey: "AIzaSyATYNNUoKb84Aav6-Zzqd3Vou6rBiqoc0c", // Get this from your firebase-applet-config.json
+      authDomain: "www.opportunityhub-sa.co.za", // MUST be your custom domain
+      projectId: "gen-lang-client-0843373442",
+      storageBucket: "gen-lang-client-0843373442.firebasestorage.app", // Get this from your firebase-applet-config.json
+      messagingSenderId: "670270967880", // Get this from your firebase-applet-config.json
+      appId: "1:670270967880:web:b56220edb93912edfbc87d", // Get this from your firebase-applet-config.json
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    // The Firebase Auth SDK will handle the rest internally within this iframe.
+  </script>
+</head>
+<body>
+  <p>Loading Firebase Authentication iframe...</p>
+</body>
+</html>

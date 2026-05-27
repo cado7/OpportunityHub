@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/__/auth/iframe",
+      "destination": "/__/auth/iframe.html"
+    },
+    {
+      "source": "/__/auth/iframe/:path*",
+      "destination": "/__/auth/iframe.html"
+    }
+  ]
+  // If you have other configurations in vercel.json (e.g., "build", "routes"),
+  // keep them and merge these rewrites into your existing array.
+  // Example for public directory:
+  // "public": "./public",
+}

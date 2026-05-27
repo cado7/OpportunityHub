@@ -8,8 +8,5 @@
       "source": "/__/auth/iframe/:path*",
       "destination": "/__/auth/iframe.html"
     }
-  ],
-  "build": {
-    "outputDirectory": "dist"
-  }
+  ]
 }

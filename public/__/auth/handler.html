@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auth Handler</title>
+  <script type="module">
+    import { getAuth, signInWithPopup, signInWithRedirect, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+
+    // Your Firebase project configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyATYNNUoKb84Aav6-Zzqd3Vou6rBiqoc0c", // Make sure this matches your firebase-applet-config.json
+      authDomain: "www.opportunityhub-sa.co.za", // This MUST be your custom domain
+      projectId: "gen-lang-client-0843373442",
+      storageBucket: "gen-lang-client-0843373442.firebasestorage.app", // Replace with your actual storage bucket
+      messagingSenderId: "670270967880", // Replace with your actual sender ID
+      appId: "1:670270967880:web:b56220edb93912edfbc87d", // Replace with your actual app ID
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Handle the sign-in redirect or popup callback
+    auth.getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          // User successfully signed in
+          // You might want to redirect them to your app's home page
+          console.log("Authentication successful!", result.user);
+        }
+      })
+      .catch((error) => {
+        console.error("Authentication error:", error);
+        // Handle errors here
+      });
+  </script>
+</head>
+<body>
+  <p>Loading authentication handler...</p>
+</body>
+</html>

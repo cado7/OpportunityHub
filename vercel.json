@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    {
+      "source": "/__/auth/iframe",
+      "destination": "/__/auth/iframe.html"
+    },
+    {
+      "source": "/__/auth/iframe/:path*",
+      "destination": "/__/auth/iframe.html"
+    }
+  ]
+  
+}

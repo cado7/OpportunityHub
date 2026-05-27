@@ -7,6 +7,10 @@
     {
       "source": "/__/auth/iframe/:path*",
       "destination": "/__/auth/iframe.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
   

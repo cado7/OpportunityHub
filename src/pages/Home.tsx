@@ -7,13 +7,7 @@ import { db } from '../lib/firebase';
 import OpportunityCard, { Opportunity } from '../components/OpportunityCard';
 import CareerNews from '../components/CareerNews';
 import SEO from '../components/SEO';
-
-const stats = [
-  { label: 'Active Opportunities', value: '12,450+', icon: Briefcase },
-  { label: 'Educational Grants', value: 'R250m+', icon: GraduationCap },
-  { label: 'Monthly Users', value: '45k+', icon: Users },
-  { label: 'Success Rate', value: '92%', icon: TrendingUp },
-];
+import { getClosingDateTimestamp } from '../lib/dateUtils';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -24,6 +18,8 @@ export default function Home() {
   });
   const [loading, setLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [activeOppsCount, setActiveOppsCount] = React.useState<number>(0);
+  const [bursariesCount, setBursariesCount] = React.useState<number>(0);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +55,7 @@ export default function Home() {
 
     const q = query(
       collection(db, 'opportunities'),
-      limit(3)
+      limit(100)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -109,7 +105,22 @@ export default function Home() {
         tags: item.tags || [item.category, item.region].filter(Boolean)
       }));
 
-      setFeaturedOpportunities(mappedData);
+      // Sort by furthest closing date (descending order of score/timestamp)
+      mappedData.sort((a, b) => {
+        return getClosingDateTimestamp(b.closingDate || b.deadline) - getClosingDateTimestamp(a.closingDate || a.deadline);
+      });
+
+      // Calculate dynamic counts for statistics from Firestore
+      const liveActiveCount = publishedData.length;
+      const liveBursariesCount = publishedData.filter(item => 
+        (item.category || item.type || '').toLowerCase() === 'bursaries'
+      ).length;
+
+      setActiveOppsCount(liveActiveCount);
+      setBursariesCount(liveBursariesCount);
+
+      // Display exactly 4 featured opportunities (closing date is furthest)
+      setFeaturedOpportunities(mappedData.slice(0, 4));
       setLoading(false);
     }, (error) => {
       console.error("Firestore error in Home:", error);
@@ -132,6 +143,31 @@ export default function Home() {
       </div>
     );
   }
+
+  const stats = [
+    { 
+      label: 'Active Opportunities', 
+      value: activeOppsCount > 0 ? `${activeOppsCount}` : '0', 
+      icon: Briefcase,
+      isLive: true 
+    },
+    { 
+      label: 'Educational Grants', 
+      value: bursariesCount > 0 ? `${bursariesCount}` : '0', 
+      icon: GraduationCap,
+      isLive: true 
+    },
+    { 
+      label: 'Monthly Users', 
+      value: '45k+', 
+      icon: Users 
+    },
+    { 
+      label: 'Success Rate', 
+      value: '92%', 
+      icon: TrendingUp 
+    },
+  ];
 
   return (
     <div className="space-y-0" id="home-page">
@@ -209,9 +245,17 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + idx * 0.1 }}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl"
+                className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl relative overflow-hidden"
               >
-                <stat.icon className="w-8 h-8 text-secondary mb-4" />
+                <div className="flex items-center justify-between mb-4">
+                  <stat.icon className="w-8 h-8 text-secondary" />
+                  {('isLive' in stat && stat.isLive) && (
+                    <span className="inline-flex items-center space-x-1.5 bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20 animate-pulse">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>Live</span>
+                    </span>
+                  )}
+                </div>
                 <div className="text-3xl font-display font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-sm text-slate-400">{stat.label}</div>
               </motion.div>

@@ -11,6 +11,20 @@ async function startServer() {
 
   app.use(express.json());
 
+  // CORS Middleware for Custom Domains or preview environments
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    
+    // Handle preflight OPTIONS requests
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
+
   // Google Verification & Robots
   app.get('/google8cbb8882481f698b.html', (req, res) => {
     res.type('text/html');

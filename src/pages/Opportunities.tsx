@@ -6,6 +6,7 @@ import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp } f
 import { db, auth } from '../lib/firebase';
 import OpportunityCard, { Opportunity } from '../components/OpportunityCard';
 import SEO from '../components/SEO';
+import { getClosingDateTimestamp } from '../lib/dateUtils';
 
 export default function Opportunities() {
   const [searchParams] = useSearchParams();
@@ -68,11 +69,9 @@ export default function Opportunities() {
           };
         }) as Opportunity[];
         
-        // Sort in memory to avoid Firestore requiring a composite index
+        // Sort in memory by furthest closing date to avoid Firestore requiring a composite index
         fetchedOpps.sort((a, b) => {
-          const timeA = a.createdAt?.seconds || (a.createdAt instanceof Date ? a.createdAt.getTime() / 1000 : 0);
-          const timeB = b.createdAt?.seconds || (b.createdAt instanceof Date ? b.createdAt.getTime() / 1000 : 0);
-          return timeB - timeA;
+          return getClosingDateTimestamp(b.closingDate || b.deadline) - getClosingDateTimestamp(a.closingDate || a.deadline);
         });
         
         setOpportunities(fetchedOpps);

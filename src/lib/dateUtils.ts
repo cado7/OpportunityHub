@@ -45,6 +45,47 @@ export function isOpportunityClosed(closingDateStr?: string): boolean {
 }
 
 /**
+ * Gets a numeric ranking value for any closing date/deadline string.
+ * Higher values represent deadlines furthest in the future.
+ * Expired deadlines are ranked lowest.
+ */
+export function getClosingDateTimestamp(closingDateStr?: string): number {
+  if (!closingDateStr) return 1;
+  const trimmed = closingDateStr.trim().toLowerCase();
+  if (
+    !trimmed || 
+    trimmed === 'ongoing' || 
+    trimmed === 'ongoing/bursary' || 
+    trimmed === 'n/a' || 
+    trimmed === 'none'
+  ) {
+    return 2; // ongoing has no end date, we place it below defined future deadlines but above expired
+  }
+  try {
+    let d = new Date(closingDateStr);
+    if (isNaN(d.getTime())) {
+      const parsed = Date.parse(closingDateStr);
+      if (isNaN(parsed)) return 2;
+      d = new Date(parsed);
+    }
+    const ts = d.getTime();
+    if (isNaN(ts)) return 2;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    d.setHours(0, 0, 0, 0);
+
+    if (today.getTime() > d.getTime()) {
+      // Expired date. We want to sort it at the absolute bottom.
+      return -ts;
+    }
+    return ts;
+  } catch (e) {
+    return 2;
+  }
+}
+
+/**
  * Gets a human-readable remaining time, or "Closed" if it has passed.
  * @param closingDateStr A date string
  */

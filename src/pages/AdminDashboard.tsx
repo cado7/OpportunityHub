@@ -46,7 +46,12 @@ export default function AdminDashboard() {
   const handleAutoFetchItems = async () => {
     setIsFetchingNews(true);
     try {
-      const response = await fetch('/api/news/fetch');
+      const appUrl = (process.env as any).APP_URL || '';
+      const baseUrl = appUrl && !window.location.hostname.includes('run.app') && !window.location.hostname.includes('localhost')
+        ? (appUrl.endsWith('/') ? appUrl.slice(0, -1) : appUrl)
+        : '';
+      
+      const response = await fetch(`${baseUrl}/api/news/fetch`);
       const data = await response.json();
       
       const user = auth.currentUser;

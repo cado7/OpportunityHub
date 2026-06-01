@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://opportunityhub-sa.co.za/</loc>
+    <loc>https://www.opportunityhub-sa.co.za/</loc>
   </url>
 
   <url>
-    <loc>https://opportunityhub-sa.co.za/opportunities</loc>
+    <loc>https://www.opportunityhub-sa.co.za/opportunities</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.opportunityhub-sa.co.za/news</loc>
   </url>
 
   <url>
-    <loc>https://opportunityhub-sa.co.za/news</loc>
+    <loc>https://www.opportunityhub-sa.co.za/about</loc>
   </url>
 
   <url>
-    <loc>https://opportunityhub-sa.co.za/about</loc>
-  </url>
-
-  <url>
-    <loc>https://opportunityhub-sa.co.za/contact</loc>
+    <loc>https://www.opportunityhub-sa.co.za/contact</loc>
   </url>
 
 </urlset>

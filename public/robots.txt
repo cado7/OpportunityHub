@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://opportunityhub-sa.co.za/sitemap.xml
+Sitemap: https://www.opportunityhub-sa.co.za/sitemap.xml

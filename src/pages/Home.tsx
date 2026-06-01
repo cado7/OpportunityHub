@@ -292,7 +292,7 @@ export default function Home() {
       <CareerNews />
 
       {/* Trust & Verification Section */}
-      <section className="py-24 border-y border-slate-100 bg-white">
+      {/* <section className="py-24 border-y border-slate-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
@@ -319,10 +319,10 @@ export default function Home() {
 
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section className="py-20 px-4">
+      {/* <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto bg-secondary rounded-[2.5rem] py-16 px-8 text-center text-white relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
           <div className="relative z-10 space-y-8">
@@ -338,7 +338,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

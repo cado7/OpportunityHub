@@ -252,8 +252,8 @@ export default function About() {
                 <Mail className="w-5 h-5 text-secondary" />
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Email</p>
-              <a href="mailto:info@opportunityhubsa.co.za" className="text-primary font-bold hover:text-secondary transition-colors">
-                info@opportunityhubsa.co.za
+              <a href="mailto:forescent07@gmail.com" className="text-primary font-bold hover:text-secondary transition-colors">
+                forescent07@gmail.com
               </a>
             </div>
             <div className="space-y-3">
@@ -262,7 +262,7 @@ export default function About() {
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Website</p>
               <a href="http://www.opportunityhubsa.co.za" target="_blank" rel="noreferrer" className="text-primary font-bold hover:text-secondary transition-colors">
-                www.opportunityhubsa.co.za
+                www.opportunityhub-sa.co.za
               </a>
             </div>
             <div className="space-y-3">

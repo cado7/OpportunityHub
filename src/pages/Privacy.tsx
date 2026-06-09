@@ -51,6 +51,7 @@ export default function Privacy() {
               </div>
               <div className="prose prose-slate max-w-none text-slate-600">
               <p>
+                <br />
                 We may also automatically collect certain technical information, including:
               </p>
                 <ul className="list-disc pl-5 space-y-2">
@@ -75,7 +76,8 @@ export default function Privacy() {
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
                   <li>Provide and maintain our services</li>
-                  <li>Respond to inquiries and support requestsPersonalize your experience on the platform</li>
+                  <li>Respond to inquiries and support requests</li>
+                  <li>Personalize your experience on the platform</li>
                   <li>Send newsletters and notifications you have subscribed to</li>
                   <li>Improve website functionality and user experience</li>
                   <li>Monitor and analyze website performance</li>
@@ -102,6 +104,7 @@ export default function Privacy() {
                   <li>Improve website functionality</li>
                   <li>Deliver relevant content and advertisements</li>
                 </ul>
+                <br />
                 <p>
                   You may disable cookies through your browser settings. However, certain features of the website may not function properly if cookies are disabled.
                 </p>
@@ -115,10 +118,10 @@ export default function Privacy() {
               </div>
               <p className="text-slate-600">
                 OpportunityHub SA may display advertisements provided by third-party advertising partners, including Google AdSense and other advertising networks.
-
-              These advertising partners may use cookies, web beacons, and similar technologies to collect information about your visits to this and other websites in order to provide personalized advertisements.
-
-              Users can learn more about Google's advertising practices through Google's Privacy and Terms policies.
+                <br />
+                These advertising partners may use cookies, web beacons, and similar technologies to collect information about your visits to this and other websites in order to provide personalized advertisements.
+                <br />
+                Users can learn more about Google's advertising practices through Google's Privacy and Terms policies.
               </p>
             </section>
 
@@ -127,22 +130,25 @@ export default function Privacy() {
                 <FileText className="w-6 h-6 text-emerald-500" />
                 <h2 className="text-xl font-bold text-slate-900">Data Sharing and Disclosure</h2>
               </div>
-              <p className="text-slate-600">
-                We do not sell your personal data to third parties. We may share information with service providers who help us operate the platform, or when required by law to comply with legal obligations.
-                We do not sell, rent, or trade your personal information to third parties.
-
-                We may share information with:
-              </p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Service providers who assist in operating the website</li>
-                  <li>Analytics providers</li>
-                  <li>Email communication platforms</li>
-                  <li>Legal authorities when required by law</li>
-                  <li>Government agencies when legally obligated</li>
-                </ul>
+              <div className="prose prose-slate max-w-none text-slate-600">
                 <p>
-                  All third-party service providers are required to protect your information and use it only for authorized purposes.
+                  We do not sell your personal data to third parties. We may share information with service providers who help us operate the platform, or when required by law to comply with legal obligations.
+                  <br />
+                  We do not sell, rent, or trade your personal information to third parties.
+
+                  We may share information with:
                 </p>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Service providers who assist in operating the website</li>
+                    <li>Analytics providers</li>
+                    <li>Email communication platforms</li>
+                    <li>Legal authorities when required by law</li>
+                    <li>Government agencies when legally obligated</li>
+                  </ul>
+                  <p>
+                     All third-party service providers are required to protect your information and use it only for authorized purposes.
+                  </p>
+              </div> 
             </section>
 
             <section>
@@ -174,19 +180,22 @@ export default function Privacy() {
                 <FileText className="w-6 h-6 text-emerald-500" />
                 <h2 className="text-xl font-bold text-slate-900">Your Rights</h2>
               </div>
-              <p className="text-slate-600">
-                In accordance with applicable laws, including the Protection of Personal Information Act (POPIA), you may have the right to:
-              </p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Request access to your personal information</li>
-                  <li>Request correction of inaccurate information</li>
-                  <li>Request deletion of personal information where legally permitted</li>
-                  <li>Object to certain processing activities</li>
-                  <li>Withdraw consent where applicable</li>
-                </ul>
+              <div className="prose prose-slate max-w-none text-slate-600">
                 <p>
-                  Requests may be submitted through our Contact Us page or official support email.
+                  In accordance with applicable laws, including the Protection of Personal Information Act (POPIA), you may have the right to:
                 </p>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Request access to your personal information</li>
+                    <li>Request correction of inaccurate information</li>
+                    <li>Request deletion of personal information where legally permitted</li>
+                    <li>Object to certain processing activities</li>
+                    <li>Withdraw consent where applicable</li>
+                  </ul>
+                  <p>
+                    <br /> 
+                    Requests may be submitted through our Contact Us page or official support email.
+                  </p>
+              </div>
             </section>
             
             <section>

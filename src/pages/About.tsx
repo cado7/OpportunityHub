@@ -226,7 +226,7 @@ export default function About() {
         <section className="mb-16">
           <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-sm">
             <h2 className="text-2xl font-bold text-primary mb-8 text-center">Independence Disclaimer</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="text-slate-600 leading-relaxed text-center">
               <p>
                 OpportunityHub SA is an independent information platform. We are not affiliated with any government department, employer, university, or training institution unless explicitly stated. All trademarks, logos, and organization names remain the property of their respective owners.
               </p>

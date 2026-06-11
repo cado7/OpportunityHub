@@ -33,7 +33,7 @@ async function startServer() {
 
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain');
-    res.send('User-agent: *\nAllow: /\n\nSitemap: https://opportunityhubsa.co.za/sitemap.xml');
+    res.send('User-agent: *\nAllow: /\n\nSitemap: https://opportunityhub-sa.co.za/sitemap.xml');
   });
 
   app.get('/sitemap.xml', (req, res) => {

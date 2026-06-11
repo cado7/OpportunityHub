@@ -145,6 +145,7 @@ export default function Privacy() {
                     <li>Legal authorities when required by law</li>
                     <li>Government agencies when legally obligated</li>
                   </ul>
+                  <br />
                   <p>
                      All third-party service providers are required to protect your information and use it only for authorized purposes.
                   </p>

@@ -55,6 +55,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-400">
               <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact Support</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">Frequently Asked Questions</Link></li>
               <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
@@ -66,11 +67,11 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-400">
               <li className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-secondary shrink-0" />
-                <span>Sandton, Johannesburg, South Africa, 2196</span>
+                <span>Online Support Serving South Africa Nationwide</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-secondary shrink-0" />
-                <a href="mailto:forescent07@gmail.com" className="hover:text-white transition-colors">forescent07@gmail.com</a>
+                <a href="mailto:info@opportunityhub-sa.co.za" className="hover:text-white transition-colors">info@opportunityhub-sa.co.za</a>
               </li>
             </ul>
           </div>

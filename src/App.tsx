@@ -14,6 +14,7 @@ import News from './pages/News';
 import NewsDetail from './pages/NewsDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import PlaceholderPage from './pages/PlaceholderPage';
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="privacy" element={<Privacy />} />
           <Route path="terms" element={<Terms />} />
+          <Route path="faq" element={<FAQ />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PlaceholderPage name="404 - Page Not Found" />} />
         </Route>

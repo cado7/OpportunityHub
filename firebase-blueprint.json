@@ -83,9 +83,26 @@
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["totalVisitorsBase", "uniqueClicksBase", "avgSessionSeconds", "totalSubscribersBase"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "A contact inquiry/message sent from the website contact form.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "subject", "message", "createdAt"]
     }
   },
   "firestore": {
+    "/contact_inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Public contact form message submissions."
+    },
     "/news/{newsId}": {
       "schema": "News",
       "description": "Career news and trends."

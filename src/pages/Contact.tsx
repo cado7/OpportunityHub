@@ -1,30 +1,89 @@
 import React, { useState } from 'react';
-import { Mail, Clock, MapPin, ChevronDown, Send, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Clock, MapPin, ChevronDown, Send, HelpCircle, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import SEO from '../components/SEO';
+import { db, auth } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Contact form input bindings
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('General Inquiry');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    setErrorMessage('');
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedMessage = message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      setErrorMessage('Please fill in all required fields.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Create a valid document in the contact_inquiries collection
+      await addDoc(collection(db, 'contact_inquiries'), {
+        name: trimmedName,
+        email: trimmedEmail,
+        subject,
+        message: trimmedMessage,
+        createdAt: serverTimestamp(),
+      });
+
       setIsSubmitting(false);
       setIsSubmitted(true);
-      // Reset after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000);
-    }, 1500);
+      
+      // Clear inputs
+      setName('');
+      setEmail('');
+      setSubject('General Inquiry');
+      setMessage('');
+    } catch (error) {
+      setIsSubmitting(false);
+      const errMessage = error instanceof Error ? error.message : String(error);
+      setErrorMessage(errMessage);
+
+      // Conform to the handleFirestoreError JSON serialization rules format
+      const errInfo = {
+        error: errMessage,
+        authInfo: {
+          userId: auth.currentUser?.uid,
+          email: auth.currentUser?.email,
+          emailVerified: auth.currentUser?.emailVerified,
+        },
+        operationType: OperationType.CREATE,
+        path: 'contact_inquiries',
+      };
+      console.error('Firestore Error: ', JSON.stringify(errInfo));
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
       <SEO 
         title="Contact Us"
-        description="Have questions or need assistance? Reach out to the OpportunityHub SA team. We're here to help you navigate your career journey."
+        description="Have questions or need assistance? Reach out to the OpportunityHub SA team. We're here to help you navigate your career and educational journey."
       />
       {/* Hero Section */}
       <section className="relative py-20 bg-primary overflow-hidden">
@@ -57,14 +116,27 @@ export default function Contact() {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 mb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Form */}
+          {/* Contact Form Container */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="lg:col-span-2 bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 sm:p-12 border border-slate-100"
           >
-            <h2 className="text-2xl font-bold text-slate-900 mb-8">Send us a Message</h2>
+            {/* FAQ Helper Link Block */}
+            <div className="bg-emerald-50/50 border border-emerald-100/80 rounded-2xl p-6 mb-8 flex items-start space-x-3 text-sm text-slate-600">
+              <HelpCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold text-slate-900 block mb-1">Have a quick question?</span>
+                Before contacting us, visit our{' '}
+                <Link to="/faq" className="font-bold text-emerald-600 hover:text-emerald-700 underline decoration-2 underline-offset-2">
+                  FAQ page
+                </Link>{' '}
+                for answers to common questions regarding opportunities, listings, bursaries, and application steps.
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Send us a Message</h2>
             
             <AnimatePresence mode="wait">
               {isSubmitted ? (
@@ -78,7 +150,7 @@ export default function Contact() {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">Message Sent Successfully!</h3>
-                  <p className="text-slate-600">Thank you for reaching out. Our team will get back to you within 24-48 hours.</p>
+                  <p className="text-slate-600">Thank you for reaching out. Our team is processing your request in real-time and will get back to you within 24-48 business hours.</p>
                   <button 
                     onClick={() => setIsSubmitted(false)}
                     className="mt-6 text-emerald-600 font-bold hover:text-emerald-700 transition-colors"
@@ -88,14 +160,22 @@ export default function Contact() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {errorMessage && (
+                    <div className="p-4 bg-rose-50 border border-rose-100 text-rose-800 rounded-xl text-xs font-semibold">
+                      Could not submit message: {errorMessage}. Please specify valid data and try again.
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Full Name</label>
                       <input 
                         required
                         type="text" 
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         placeholder="John Doe"
-                        className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                        className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-slate-700"
                       />
                     </div>
                     <div>
@@ -103,19 +183,25 @@ export default function Contact() {
                       <input 
                         required
                         type="email" 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="john@example.com"
-                        className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                        className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-slate-700"
                       />
                     </div>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Subject</label>
                     <div className="relative">
-                      <select className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all appearance-none">
-                        <option>General Inquiry</option>
-                        <option>Technical Issue</option>
-                        <option>Report a Listing</option>
-                        <option>Partnership</option>
+                      <select 
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all appearance-none text-slate-700 font-medium"
+                      >
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Technical Issue">Technical Issue</option>
+                        <option value="Report a Listing">Report a Listing</option>
+                        <option value="Partnership">Partnership Inquiry</option>
                       </select>
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                     </div>
@@ -125,8 +211,10 @@ export default function Contact() {
                     <textarea 
                       required
                       rows={6}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                       placeholder="How can we help you?"
-                      className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
+                      className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none text-slate-700"
                     ></textarea>
                   </div>
                   <button 
@@ -148,7 +236,7 @@ export default function Contact() {
             </AnimatePresence>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Contact Info Sidebar */}
           <div className="space-y-8">
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
@@ -156,18 +244,23 @@ export default function Contact() {
               transition={{ delay: 0.3 }}
               className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100"
             >
-              <h2 className="text-xl font-bold text-slate-900 mb-8">Contact Information</h2>
-              <div className="space-y-8">
+              <h2 className="text-xl font-bold text-slate-900 mb-6">Contact Information</h2>
+              <div className="space-y-6">
+                
+                {/* Email Support */}
                 <div className="flex items-start space-x-4">
                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
                     <Mail className="w-5 h-5 text-emerald-500" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Email Support</h3>
-                    <a href="mailto:support@opportunityhubsa.co.za" className="text-slate-500 text-sm hover:text-emerald-600 transition-colors">support@opportunityhubsa.co.za</a>
+                    <a href="mailto:info@opportunityhub-sa.co.za" className="text-slate-500 text-sm hover:text-emerald-600 transition-colors font-semibold">
+                      info@opportunityhub-sa.co.za
+                    </a>
                   </div>
                 </div>
 
+                {/* Operating Hours */}
                 <div className="flex items-start space-x-4">
                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
                     <Clock className="w-5 h-5 text-emerald-500" />
@@ -179,19 +272,46 @@ export default function Contact() {
                   </div>
                 </div>
 
+                {/* Response Time Guarantee */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 mb-1">Average Response Time</h3>
+                    <p className="text-slate-500 text-sm">Within 24–48 business hours</p>
+                  </div>
+                </div>
+
+                {/* Nationwide Platform Detail */}
                 <div className="flex items-start space-x-4">
                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5 text-emerald-500" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1">Office Location</h3>
-                    <p className="text-slate-500 text-sm">Sandton, Johannesburg</p>
-                    <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold text-emerald-600">South Africa, 2196</p>
+                    <p className="text-slate-900 font-bold text-sm">OpportunityHub SA</p>
+                    <p className="text-slate-500 text-xs">Online Platform Serving South Africa</p>
+                    <p className="text-[10px] text-emerald-600 mt-1 uppercase font-bold">Online Support Available Nationwide</p>
                   </div>
                 </div>
+
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Trust & Platform Disclaimer Section */}
+      <section className="bg-white border-t border-slate-100 py-12">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center justify-center p-2 bg-amber-50 rounded-full text-amber-500 mb-4">
+            <ShieldAlert className="w-6 h-6" />
+          </div>
+          <p className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3">Independent Information Service Rules</p>
+          <p className="text-slate-500 text-sm leading-relaxed max-w-2xl mx-auto">
+            <strong>Important Disclaimer:</strong> OpportunityHub SA provides information about jobs, bursaries, internships, and learnerships. We are not affiliated with employers unless explicitly stated and cannot influence application outcomes.
+          </p>
         </div>
       </section>
       
@@ -200,9 +320,12 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <HelpCircle className="w-12 h-12 text-emerald-400 mx-auto mb-6" />
           <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-          <p className="text-slate-400 mb-8 max-w-xl mx-auto">Feel free to reach out to our team directly for any assistance or inquiries.</p>
-          <div className="flex items-center justify-center">
-            <a href="mailto:support@opportunityhubsa.co.za" className="bg-emerald-500 px-8 py-3 rounded-xl font-bold hover:bg-emerald-600 transition-colors">
+          <p className="text-slate-400 mb-8 max-w-xl mx-auto">Feel free to reach out to our team directly or browse our FAQ page to get immediate solutions.</p>
+          <div className="flex items-center justify-center space-x-4">
+            <Link to="/faq" className="bg-slate-800 border border-slate-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-700 transition-colors">
+              Read the FAQs
+            </Link>
+            <a href="mailto:info@opportunityhub-sa.co.za" className="bg-emerald-500 px-8 py-3 rounded-xl font-bold hover:bg-emerald-600 transition-colors">
               Email Support
             </a>
           </div>

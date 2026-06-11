@@ -252,8 +252,8 @@ export default function About() {
                 <Mail className="w-5 h-5 text-secondary" />
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Email</p>
-              <a href="mailto:forescent07@gmail.com" className="text-primary font-bold hover:text-secondary transition-colors">
-                forescent07@gmail.com
+              <a href="mailto:info@opportunityhub-sa.co.za" className="text-primary font-bold hover:text-secondary transition-colors">
+                info@opportunityhub-sa.co.za
               </a>
             </div>
             <div className="space-y-3">

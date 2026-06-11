@@ -36,6 +36,12 @@ async function startServer() {
     res.send('User-agent: *\nAllow: /\n\nSitemap: https://opportunityhub-sa.co.za/sitemap.xml');
   });
 
+  // Explicit AdSense Verification Route 
+  app.get('/ads.txt', (req, res) => {
+    res.type('text/plain');
+    res.send('google.com, pub-4442109680477192, DIRECT, f08c47fec0942fa0');
+  });
+
   app.get('/sitemap.xml', (req, res) => {
     res.header('Content-Type', 'application/xml');
     res.sendFile(path.join(process.cwd(), 'sitemap.xml'));

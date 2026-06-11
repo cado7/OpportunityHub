@@ -215,7 +215,7 @@ export default function About() {
                 <p className="text-xs text-white/60">Focused platform</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">independent</p>
+                <p className="text-3xl font-bold text-secondary">Reliable</p>
                 <p className="text-xs text-white/60">Information platform</p>
               </div>
             </div>

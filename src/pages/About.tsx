@@ -215,12 +215,24 @@ export default function About() {
                 <p className="text-xs text-white/60">Focused platform</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center">
-                <p className="text-3xl font-bold text-secondary">92%</p>
-                <p className="text-xs text-white/60">Success rate</p>
+                <p className="text-3xl font-bold text-secondary">independent</p>
+                <p className="text-xs text-white/60">Information platform</p>
               </div>
             </div>
           </div>
         </motion.section>
+
+
+        <section className="mb-16">
+          <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-sm">
+            <h2 className="text-2xl font-bold text-primary mb-8 text-center">Independence Disclaimer</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <p>
+                OpportunityHub SA is an independent information platform. We are not affiliated with any government department, employer, university, or training institution unless explicitly stated. All trademarks, logos, and organization names remain the property of their respective owners.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Our Commitment */}
         <section className="mb-16">
@@ -261,7 +273,7 @@ export default function About() {
                 <Globe className="w-5 h-5 text-secondary" />
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Website</p>
-              <a href="http://www.opportunityhubsa.co.za" target="_blank" rel="noreferrer" className="text-primary font-bold hover:text-secondary transition-colors">
+              <a href="http://www.opportunityhub-sa.co.za" target="_blank" rel="noreferrer" className="text-primary font-bold hover:text-secondary transition-colors">
                 www.opportunityhub-sa.co.za
               </a>
             </div>

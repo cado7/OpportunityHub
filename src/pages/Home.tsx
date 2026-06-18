@@ -165,7 +165,7 @@ export default function Home() {
     { 
       label: 'Success Rate', 
       value: '92%', 
-      icon: TrendingUp 
+      icon: RefreshCcw 
     },
   ];
 

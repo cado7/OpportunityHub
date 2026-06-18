@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, GraduationCap, Briefcase, TrendingUp, ArrowRight, ShieldCheck, Zap, Users } from 'lucide-react';
+import { Search, MapPin, GraduationCap, Briefcase, TrendingUp, ArrowRight, ShieldCheck, Zap, Users, RefreshCcw } from 'lucide-react';
 import { motion } from 'motion/react';
 import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';

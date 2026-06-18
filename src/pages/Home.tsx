@@ -163,9 +163,9 @@ export default function Home() {
       icon: Users 
     },
     { 
-      label: 'Success Rate', 
-      value: '92%', 
-      icon: TrendingUp 
+      label: 'Updated Daily',
+      value: '24/7',
+      icon: RefreshCw 
     },
   ];
 

@@ -78,7 +78,7 @@ export default function Terms() {
             </section>
 
             <div className="pt-8 border-t border-slate-100 italic text-sm text-slate-400 text-center">
-              Last Updated: May 19, 2024
+              Last Updated: May 19, 2026
             </div>
           </div>
         </motion.div>
